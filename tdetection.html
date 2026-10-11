@@ -1,0 +1,954 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIELD-Chain | Threat Detection</title>
+
+<style>
+:root {
+  --bg: #020d20;
+  --panel: #041a36;
+  --line: #0870c7;
+  --blue: #08a8ff;
+  --cyan: #14d9e7;
+  --text: #e8f4ff;
+  --muted: #8db8e3;
+  --red: #ff405c;
+  --orange: #ffad27;
+  --green: #12d9bd;
+  --purple: #895cff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at top, #06244a, var(--bg) 65%);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+
+.topbar {
+  min-height: 84px;
+  padding: 15px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+  background: #031127;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.brand {
+  font-size: 28px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.brand span { color: var(--cyan); }
+
+.tagline {
+  border-left: 1px solid var(--blue);
+  padding-left: 22px;
+  color: #69bfff;
+  line-height: 1.5;
+}
+
+.user {
+  color: #8ac9ff;
+  white-space: nowrap;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: #0789f6;
+  color: white;
+  font-weight: bold;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 235px minmax(0, 1fr);
+  min-height: calc(100vh - 84px);
+}
+
+aside {
+  padding: 22px 13px;
+  background: #021127;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.nav {
+  padding: 15px;
+  border-radius: 8px;
+  color: #8bcaff;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.nav:hover, .nav.active {
+  background: linear-gradient(100deg, #078fea, #0641a6);
+  color: white;
+}
+
+.sidebar-note {
+  margin-top: auto;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: #75c6ff;
+  line-height: 1.6;
+}
+
+main {
+  min-width: 0;
+  padding: 25px;
+}
+
+.heading-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+h1 {
+  font-size: 32px;
+  margin: 0 0 8px;
+}
+
+.subtitle { color: #83bce9; }
+
+.agent {
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #031733;
+  color: #9bc9ef;
+}
+
+.agent-title {
+  color: var(--cyan);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+}
+
+.demo-note {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: right;
+  margin: 0 0 12px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.stat, .panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: linear-gradient(140deg, #041a36, #021128);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 18px;
+  min-height: 115px;
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--blue);
+  border-radius: 15px;
+  color: var(--blue);
+  font-size: 25px;
+  background: #032c51;
+}
+
+.stat:nth-child(2) .stat-icon {
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+.stat:nth-child(3) .stat-icon {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.stat:nth-child(4) .stat-icon {
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+.stat h3 {
+  font-size: 14px;
+  color: #b7dcff;
+  margin: 0 0 9px;
+}
+
+.stat-num { font-size: 29px; font-weight: bold; }
+.change { color: var(--green); font-size: 12px; }
+.change.red { color: var(--red); }
+.vs { color: var(--muted); font-size: 11px; margin-top: 5px; }
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr 1fr;
+  gap: 17px;
+  margin-bottom: 17px;
+}
+
+.panel-title {
+  padding: 15px 17px 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.donut-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 12px;
+  padding: 18px;
+}
+
+.donut {
+  width: 125px;
+  height: 125px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.donut::before {
+  content: "";
+  position: absolute;
+  inset: 15px;
+  border-radius: 50%;
+  background: #03152d;
+}
+
+.donut-center {
+  position: relative;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.donut-center strong {
+  display: block;
+  font-size: 25px;
+}
+
+.legend {
+  display: grid;
+  gap: 17px;
+  min-width: 100px;
+  color: #a7d4ff;
+  font-size: 12px;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legend b { margin-left: auto; color: white; }
+
+.key {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.red { background: var(--red); }
+.orange { background: var(--orange); }
+.blue { background: var(--blue); }
+.cyan { background: var(--cyan); }
+.purple { background: var(--purple); }
+
+.chart-legend {
+  display: flex;
+  gap: 12px;
+  padding: 10px 16px 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.linechart { padding: 10px; }
+.linechart svg { width: 100%; height: 155px; }
+
+.alerts-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.3fr) minmax(290px, .9fr);
+  gap: 17px;
+}
+
+.table-head {
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.table-head h2, .details h2 { font-size: 18px; margin: 0; }
+
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filters input, .filters select {
+  max-width: 180px;
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid #0863b6;
+  border-radius: 7px;
+  background: #03142c;
+  color: #cce8ff;
+}
+
+.filters input { width: 165px; }
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+th {
+  text-align: left;
+  padding: 13px 11px;
+  color: #86c7ff;
+  font-weight: normal;
+  background: #041b38;
+}
+
+td {
+  padding: 13px 11px;
+  border-top: 1px solid #073c70;
+  color: #b9d9f8;
+}
+
+tbody tr { cursor: pointer; }
+tbody tr:hover, tbody tr.selected { background: #08264a; }
+
+.risk {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 18px;
+  font-weight: bold;
+}
+
+.risk.high { background: #68152e; color: #ff9daf; }
+.risk.medium { background: #57380e; color: #ffd18a; }
+.risk.low { background: #063f73; color: #92d6ff; }
+
+.status { display: flex; align-items: center; gap: 7px; }
+.status i { width: 8px; height: 8px; border-radius: 50%; }
+.status.unresolved { color: #ff6379; }
+.status.unresolved i { background: var(--red); }
+.status.reviewed { color: var(--green); }
+.status.reviewed i { background: var(--green); }
+.status.investigating { color: #ffc34c; }
+.status.investigating i { background: var(--orange); }
+.status.resolved { color: #91bdff; }
+.status.resolved i { background: #75aaff; }
+
+.view-btn {
+  padding: 6px 11px;
+  border: 1px solid #087bd6;
+  border-radius: 5px;
+  color: #53c1ff;
+  background: #032346;
+}
+
+.details { padding: 0 15px 16px; }
+
+.details-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid #0b3159;
+}
+
+.close {
+  background: none;
+  border: 0;
+  color: var(--blue);
+  font-size: 23px;
+}
+
+.alert-label {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 15px;
+  margin: 12px 0;
+  background: #64142b;
+  color: #ffb0bd;
+  font-weight: bold;
+}
+
+.details-time { color: #a5c7e7; font-size: 12px; }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 95px minmax(0, 1fr);
+  gap: 15px 8px;
+  margin: 10px 0 20px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.detail-grid dt { color: #92c8f7; }
+.detail-grid dd { margin: 0; overflow-wrap: anywhere; }
+
+.hash { font-family: monospace; color: #82c7ff; }
+
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.action {
+  padding: 10px 11px;
+  border: 1px solid #0877d2;
+  border-radius: 8px;
+  background: #031c39;
+  color: #8fd1ff;
+  font-size: 12px;
+}
+
+.action.primary { background: #078ce9; color: white; }
+.action.purple { border-color: var(--purple); color: #b8a1ff; }
+
+.footer-note { color: #82a8ce; font-size: 11px; line-height: 1.5; }
+.empty { padding: 24px; text-align: center; color: var(--muted); display: none; }
+
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  padding: 14px 18px;
+  border: 1px solid var(--blue);
+  border-radius: 8px;
+  background: #052449;
+  color: white;
+  display: none;
+  z-index: 5;
+}
+
+@media(max-width:1250px) {
+  .layout { grid-template-columns: 195px minmax(0, 1fr); }
+  main { padding: 18px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .charts { grid-template-columns: 1fr 1.2fr; }
+  .risk-panel { display: none; }
+  .alerts-layout { grid-template-columns: 1fr; }
+}
+
+@media(max-width:850px) {
+  .tagline { display: none; }
+  .layout { grid-template-columns: 65px minmax(0, 1fr); }
+  aside { padding: 12px 6px; }
+  .nav { font-size: 20px; text-align: center; padding: 14px 4px; }
+  .nav .label, .sidebar-note { display: none; }
+  .heading-row { align-items: flex-start; flex-direction: column; }
+  .charts { grid-template-columns: 1fr; }
+  .risk-panel { display: block; }
+}
+
+@media(max-width:520px) {
+  .topbar { padding: 12px; }
+  .brand { font-size: 20px; }
+  .user-name { display: none; }
+  main { padding: 12px 8px; }
+  h1 { font-size: 26px; }
+  .stats { gap: 8px; }
+  .stat { padding: 10px; }
+  .stat-icon { display: none; }
+  .stat h3 { font-size: 12px; }
+  .stat-num { font-size: 24px; }
+  .filters { width: 100%; }
+  .filters input { width: 100%; max-width: none; }
+  .filters select { flex: 1; max-width: none; }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <div class="top-left">
+    <div class="brand">⬡ SHIELD-<span>Chain</span></div>
+    <div class="tagline">Self-Healing Blockchain-Based<br>Cybersecurity System</div>
+  </div>
+  <div class="user">
+    ♧ &nbsp; <span class="avatar">TR</span>
+    <span class="user-name">Reviewer</span>
+  </div>
+</header>
+
+<div class="layout">
+<aside>
+  <a class="nav" href="dashboard.html">⌂ &nbsp; <span class="label">Dashboard</span></a>
+  <a class="nav active" href="tdetection.html">⛨ &nbsp; <span class="label">Threat Detection</span></a>
+  <a class="nav" href="protected_files.html">▱ &nbsp; <span class="label">Protected Files</span></a>
+  <a class="nav" href="recovery.html">⟳ &nbsp; <span class="label">Recovery</span></a>
+  <a class="nav" href="blockchain_ledger.html">⬡ &nbsp; <span class="label">Blockchain Ledger</span></a>
+  <a class="nav" href="settings.html">⚙ &nbsp; <span class="label">Settings</span></a>
+
+  <div class="sidebar-note">
+    ⛨ SHIELD-Chain<br>
+    Your data.<br>Our protection.
+  </div>
+</aside>
+
+<main>
+  <div class="heading-row">
+    <div>
+      <h1>Threat Detection</h1>
+      <div class="subtitle">Monitor suspicious activities, review alerts and take action.</div>
+    </div>
+
+    <div class="agent">
+      <div class="agent-title"><span class="dot"></span>Monitoring Agent Status: DEMO</div>
+      <div>File monitoring: Sample data</div>
+      <div style="margin-top:6px">System events: Sample data</div>
+    </div>
+  </div>
+
+  <p class="demo-note">DEMO MODE — values shown are illustrative, not live monitoring results.</p>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-icon">▤</div>
+      <div>
+        <h3>Total Events</h3>
+        <div class="stat-num" id="totalEvents">120</div>
+        <div class="change">↑ 12%</div>
+        <div class="vs">vs. previous 24h</div>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">⚠</div>
+      <div>
+        <h3>Suspicious Events</h3>
+        <div class="stat-num">5</div>
+        <div class="change">↑ 67%</div>
+        <div class="vs">vs. previous 24h</div>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">▲</div>
+      <div>
+        <h3>High Risk Alerts</h3>
+        <div class="stat-num" id="highCount">2</div>
+        <div class="change red">↑ 100%</div>
+        <div class="vs">vs. previous 24h</div>
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-icon">◷</div>
+      <div>
+        <h3>Unresolved Incidents</h3>
+        <div class="stat-num" id="unresolvedCount">3</div>
+        <div class="change">↑ 50%</div>
+        <div class="vs">vs. previous 24h</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="charts">
+    <div class="panel">
+      <div class="panel-title">Threat Overview</div>
+      <div class="donut-content">
+        <div class="donut" style="background:conic-gradient(var(--red) 0 50%,var(--orange) 50% 70%,var(--blue) 70% 100%)">
+          <div class="donut-center"><strong>5</strong>Suspicious<br>Events</div>
+        </div>
+        <div class="legend">
+          <div><i class="key red"></i>High Risk <b>2</b></div>
+          <div><i class="key orange"></i>Medium Risk <b>1</b></div>
+          <div><i class="key blue"></i>Low Risk <b>2</b></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Event Trend <small>(Last 24 Hours)</small></div>
+      <div class="chart-legend">
+        <span><i class="key cyan"></i> Total Events</span>
+        <span><i class="key purple"></i> Suspicious Events</span>
+      </div>
+      <div class="linechart">
+        <svg viewBox="0 0 430 155" preserveAspectRatio="none" aria-label="Illustrative event trend chart">
+          <g stroke="#10395f" stroke-width="1">
+            <path d="M30 15H420 M30 45H420 M30 75H420 M30 105H420 M30 135H420"/>
+            <path d="M30 15V135 M100 15V135 M170 15V135 M240 15V135 M310 15V135 M380 15V135"/>
+          </g>
+          <g fill="#8db8e3" font-size="10">
+            <text x="3" y="18">20</text><text x="3" y="48">15</text>
+            <text x="3" y="78">10</text><text x="10" y="108">5</text>
+            <text x="10" y="138">0</text>
+            <text x="30" y="151">12AM</text><text x="100" y="151">4AM</text>
+            <text x="170" y="151">8AM</text><text x="240" y="151">12PM</text>
+            <text x="310" y="151">4PM</text><text x="380" y="151">8PM</text>
+          </g>
+          <polyline points="30,112 50,95 70,100 90,88 110,80 130,57 150,68 170,43 190,65 210,84 230,72 250,88 270,96 290,83 310,94 330,80 350,89 370,98 390,85 420,81"
+            fill="none" stroke="#14d9e7" stroke-width="2.5"/>
+          <polyline points="30,129 50,120 70,125 90,118 110,123 130,115 150,119 170,110 190,121 210,116 230,124 250,119 270,126 290,118 310,124 330,121 350,126 370,119 390,123 420,117"
+            fill="none" stroke="#895cff" stroke-width="2.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="panel risk-panel">
+      <div class="panel-title">Risk Distribution</div>
+      <div class="donut-content">
+        <div class="donut" style="background:conic-gradient(var(--red) 0 50%,var(--blue) 50% 85%,var(--orange) 85% 100%)">
+          <div class="donut-center"><strong>2</strong>High Risk</div>
+        </div>
+        <div class="legend">
+          <div><i class="key red"></i>High Risk <b>2</b></div>
+          <div><i class="key orange"></i>Medium <b>1</b></div>
+          <div><i class="key blue"></i>Low Risk <b>2</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alerts-layout">
+    <div class="panel">
+      <div class="table-head">
+        <h2>Recent Alerts</h2>
+        <div class="filters">
+          <input id="search" type="search" placeholder="Search events..." aria-label="Search alerts">
+          <select id="typeFilter" aria-label="Filter by type">
+            <option value="all">All Types</option>
+            <option>File Modified</option>
+            <option>Process Started</option>
+            <option>File Created</option>
+            <option>Login Attempt</option>
+            <option>File Access</option>
+            <option>System Event</option>
+          </select>
+          <select id="riskFilter" aria-label="Filter by risk">
+            <option value="all">All Risk Levels</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th><th>Type</th><th>File / Process</th>
+              <th>Risk</th><th>Detection Reason</th><th>Status</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="alertRows">
+            <tr data-type="File Modified" data-risk="High" data-status="Unresolved"
+                data-name="invoice.pdf" data-reason="Unexpected file modification in protected folder"
+                data-time="Oct 8, 10:42 AM" data-location="Sample protected folder">
+              <td>Oct 8, 10:42 AM</td><td>▤ File Modified</td><td>invoice.pdf</td>
+              <td><span class="risk high">High</span></td><td>Unexpected file modification</td>
+              <td><span class="status unresolved"><i></i>Unresolved</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+
+            <tr data-type="Process Started" data-risk="High" data-status="Unresolved"
+                data-name="powershell.exe" data-reason="Sample suspicious process behavior"
+                data-time="Oct 8, 09:17 AM" data-location="Sample process event">
+              <td>Oct 8, 09:17 AM</td><td>▧ Process Started</td><td>powershell.exe</td>
+              <td><span class="risk high">High</span></td><td>Sample suspicious process behavior</td>
+              <td><span class="status unresolved"><i></i>Unresolved</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+
+            <tr data-type="File Created" data-risk="Medium" data-status="Reviewed"
+                data-name="temp.dat" data-reason="Unusual file creation pattern"
+                data-time="Oct 8, 07:53 AM" data-location="Sample protected folder">
+              <td>Oct 8, 07:53 AM</td><td>▤ File Created</td><td>temp.dat</td>
+              <td><span class="risk medium">Medium</span></td><td>Unusual file creation pattern</td>
+              <td><span class="status reviewed"><i></i>Reviewed</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+
+            <tr data-type="Login Attempt" data-risk="Medium" data-status="Investigating"
+                data-name="User Account" data-reason="Multiple failed login attempts"
+                data-time="Oct 8, 06:21 AM" data-location="Sample system event">
+              <td>Oct 8, 06:21 AM</td><td>♙ Login Attempt</td><td>User Account</td>
+              <td><span class="risk medium">Medium</span></td><td>Multiple failed login attempts</td>
+              <td><span class="status investigating"><i></i>Investigating</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+
+            <tr data-type="File Access" data-risk="Low" data-status="Reviewed"
+                data-name="config.sys" data-reason="Access from unusual location"
+                data-time="Oct 8, 05:12 AM" data-location="Sample protected folder">
+              <td>Oct 8, 05:12 AM</td><td>▤ File Access</td><td>config.sys</td>
+              <td><span class="risk low">Low</span></td><td>Access from unusual location</td>
+              <td><span class="status reviewed"><i></i>Reviewed</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+
+            <tr data-type="System Event" data-risk="Low" data-status="Resolved"
+                data-name="Registry Change" data-reason="Sample system configuration event"
+                data-time="Oct 8, 04:37 AM" data-location="Sample system event">
+              <td>Oct 8, 04:37 AM</td><td>⚙ System Event</td><td>Registry Change</td>
+              <td><span class="risk low">Low</span></td><td>Sample configuration event</td>
+              <td><span class="status resolved"><i></i>Resolved</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+
+            <tr data-type="File Modified" data-risk="Medium" data-status="Unresolved"
+                data-name="README.txt" data-reason="Hash mismatch detected"
+                data-time="Oct 8, 02:15 AM" data-location="Sample protected folder">
+              <td>Oct 8, 02:15 AM</td><td>▤ File Modified</td><td>README.txt</td>
+              <td><span class="risk medium">Medium</span></td><td>Hash mismatch detected</td>
+              <td><span class="status unresolved"><i></i>Unresolved</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="empty" id="empty">No alerts match your search or filters.</div>
+      </div>
+    </div>
+
+    <div class="panel details" id="details">
+      <div class="details-top">
+        <h2>Alert Details</h2>
+        <button class="close" id="closeDetails" aria-label="Close details">×</button>
+      </div>
+
+      <div id="detailContent">
+        <div>
+          <span class="alert-label" id="detailLabel">⚠ High Risk</span>
+          <span class="details-time" id="detailTime">Oct 8, 10:42 AM</span>
+        </div>
+
+        <dl class="detail-grid">
+          <dt>Type</dt><dd id="detailType">File Modified</dd>
+          <dt>File / Process</dt><dd id="detailName">invoice.pdf</dd>
+          <dt>Location</dt><dd id="detailLocation">Sample protected folder</dd>
+          <dt>Detection Reason</dt><dd id="detailReason">Unexpected file modification in protected folder</dd>
+          <dt>SHA-256 Current</dt><dd class="hash">Sample hash — not live data</dd>
+          <dt>SHA-256 Expected</dt><dd class="hash">Sample baseline — not live data</dd>
+          <dt>Risk Level</dt><dd id="detailRisk"><span class="risk high">High</span></dd>
+        </dl>
+
+        <div class="actions">
+          <button class="action primary" id="reviewBtn">✓ Mark Reviewed</button>
+          <button class="action" id="dismissBtn">× Dismiss</button>
+          <button class="action purple" id="escalateBtn">↗ Escalate</button>
+        </div>
+
+        <p class="footer-note">
+          Demo actions only. A hash mismatch is a signal to review, not proof of malicious activity.
+          File recovery is not connected yet.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const rows = [...document.querySelectorAll("#alertRows tr")];
+let selected = rows[0];
+
+const toast = document.getElementById("toast");
+let toastTimer;
+
+function notify(message) {
+  toast.textContent = message;
+  toast.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2800);
+}
+
+function updateDetails(row) {
+  if (!row) return;
+
+  selected = row;
+  rows.forEach(r => r.classList.toggle("selected", r === row));
+
+  const d = row.dataset;
+
+  document.getElementById("detailTime").textContent = d.time;
+  document.getElementById("detailType").textContent = d.type;
+  document.getElementById("detailName").textContent = d.name;
+  document.getElementById("detailLocation").textContent = d.location;
+  document.getElementById("detailReason").textContent = d.reason;
+
+  const riskClass = d.risk.toLowerCase();
+
+  document.getElementById("detailRisk").innerHTML =
+    '<span class="risk ' + riskClass + '">' + d.risk + '</span>';
+
+  const label = document.getElementById("detailLabel");
+  label.textContent = "⚠ " + d.risk + " Risk";
+  label.style.background =
+    d.risk === "High" ? "#64142b" :
+    d.risk === "Medium" ? "#57380e" : "#063f73";
+}
+
+rows.forEach(row => {
+  row.addEventListener("click", event => {
+    if (event.target.closest("button") ||
+        event.target.tagName === "TD") {
+      updateDetails(row);
+    }
+  });
+
+  row.querySelector(".view-btn").addEventListener("click", event => {
+    event.stopPropagation();
+    updateDetails(row);
+    document.getElementById("detailContent").style.display = "block";
+    document.getElementById("details").scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+  });
+});
+
+function filterRows() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const type = document.getElementById("typeFilter").value;
+  const risk = document.getElementById("riskFilter").value;
+  let visible = 0;
+
+  rows.forEach(row => {
+    const matchesText = row.innerText.toLowerCase().includes(query);
+    const matchesType = type === "all" || row.dataset.type === type;
+    const matchesRisk = risk === "all" || row.dataset.risk === risk;
+    const show = matchesText && matchesType && matchesRisk;
+
+    row.style.display = show ? "" : "none";
+    if (show) visible++;
+  });
+
+  document.getElementById("empty").style.display =
+    visible ? "none" : "block";
+}
+
+document.getElementById("search").addEventListener("input", filterRows);
+document.getElementById("typeFilter").addEventListener("change", filterRows);
+document.getElementById("riskFilter").addEventListener("change", filterRows);
+
+function updateCounters() {
+  document.getElementById("unresolvedCount").textContent =
+    rows.filter(row => row.dataset.status === "Unresolved").length;
+
+  document.getElementById("highCount").textContent =
+    rows.filter(row =>
+      row.dataset.risk === "High" &&
+      row.dataset.status !== "Dismissed" &&
+      row.dataset.status !== "Resolved"
+    ).length;
+}
+
+function changeStatus(status) {
+  if (!selected) return;
+
+  selected.dataset.status = status;
+
+  const statusCell = selected.querySelector(".status");
+  statusCell.className = "status " + status.toLowerCase();
+  statusCell.innerHTML = "<i></i>" + status;
+
+  updateCounters();
+
+  notify(selected.dataset.name + " marked " + status.toLowerCase() +
+    ". Demo only; no system action was performed.");
+}
+
+document.getElementById("reviewBtn").addEventListener("click", () => {
+  changeStatus("Reviewed");
+});
+
+document.getElementById("dismissBtn").addEventListener("click", () => {
+  if (confirm("Dismiss this sample alert?")) {
+    changeStatus("Dismissed");
+  }
+});
+
+document.getElementById("escalateBtn").addEventListener("click", () => {
+  notify("Sample alert queued for review. Recovery is not connected yet.");
+});
+
+document.getElementById("closeDetails").addEventListener("click", () => {
+  document.getElementById("detailContent").style.display = "none";
+  notify("Details hidden. Click View on an alert to reopen.");
+});
+
+rows.forEach(row => {
+  row.addEventListener("dblclick", () => {
+    document.getElementById("detailContent").style.display = "block";
+    updateDetails(row);
+  });
+});
+
+updateDetails(selected);
+updateCounters();
+</script>
+</body>
+</html>

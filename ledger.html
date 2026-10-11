@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIELD-Chain | Blockchain Ledger</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #080f1e;
+    color: #e5edf8;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #0d1729;
+    border-right: 1px solid #20334d;
+    padding: 28px 18px;
+}
+
+.logo {
+    color: #35d9f5;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 8px 10px;
+}
+
+.subtitle {
+    color: #8293ac;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin: 0 0 35px 10px;
+}
+
+.nav {
+    display: block;
+    color: #9cabc1;
+    text-decoration: none;
+    padding: 14px 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.nav:hover,
+.nav.active {
+    background: #142c40;
+    color: #35d9f5;
+}
+
+.main {
+    margin-left: 245px;
+    padding: 32px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: #8293ac;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.status {
+    color: #35d9a0;
+    background: #10332f;
+    border: 1px solid #20554b;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #101c30;
+    border: 1px solid #20334d;
+    border-radius: 12px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.card-title {
+    color: #91a3bc;
+    font-size: 13px;
+    margin-bottom: 17px;
+}
+
+.number {
+    font-size: 29px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.cyan {
+    color: #35d9f5;
+}
+
+.green {
+    color: #35d9a0;
+}
+
+.yellow {
+    color: #f5c451;
+}
+
+.section-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.section-description {
+    color: #8293ac;
+    font-size: 13px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.ledger-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 8px 2px 20px;
+}
+
+.block {
+    flex: 0 0 225px;
+    background: #0c1729;
+    border: 1px solid #286078;
+    border-radius: 10px;
+    padding: 18px;
+}
+
+.block h3 {
+    color: #35d9f5;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.block p {
+    color: #a1b1c7;
+    font-size: 12px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.block strong {
+    color: #e5edf8;
+}
+
+.chain-arrow {
+    align-self: center;
+    color: #35d9f5;
+    font-size: 25px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    color: #8293ac;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 15px 12px;
+    border-bottom: 1px solid #263951;
+}
+
+td {
+    padding: 16px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid #1d2c42;
+    vertical-align: top;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.hash {
+    color: #6ed9ee;
+    font-family: Consolas, monospace;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+    max-width: 220px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+}
+
+.valid {
+    color: #35d9a0;
+    background: #10352f;
+}
+
+button {
+    background: #103443;
+    color: #35d9f5;
+    border: 1px solid #236078;
+    padding: 11px 15px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+button:hover {
+    background: #17475a;
+}
+
+.notice {
+    margin-top: 18px;
+    padding: 14px;
+    background: #14283b;
+    border: 1px solid #24445c;
+    color: #a9c2d7;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+#verifyResult {
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+@media (max-width: 950px) {
+    .sidebar {
+        width: 195px;
+    }
+
+    .main {
+        margin-left: 195px;
+        padding: 22px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 18px;
+    }
+
+    .subtitle {
+        margin-bottom: 15px;
+    }
+
+    .nav {
+        display: inline-block;
+        padding: 10px;
+        margin: 2px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 18px;
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">⬡ SHIELD-Chain</div>
+    <div class="subtitle">CYBERSECURITY PLATFORM</div>
+
+    <a class="nav" href="dashboard.html">⌂ &nbsp; Dashboard</a>
+    <a class="nav" href="tdetection.html">⛨ &nbsp; Threat Detection</a>
+    <a class="nav" href="protected_files.html">▤ &nbsp; Protected Files</a>
+    <a class="nav" href="recovery.html">⟳ &nbsp; Recovery</a>
+    <a class="nav active" href="ledger.html">⬡ &nbsp; Blockchain Ledger</a>
+    <a class="nav" href="settings.html">⚙ &nbsp; Settings</a>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div>
+            <h1>Blockchain Ledger</h1>
+            <p class="muted">
+                Review the recorded security events and block history.
+            </p>
+        </div>
+        <div class="status">● Ledger Demo</div>
+    </header>
+
+    <section class="stats">
+        <div class="card">
+            <div class="card-title">Total Blocks</div>
+            <div class="number cyan" id="blockCount">3</div>
+            <p class="muted">Sample blocks displayed</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Recorded Events</div>
+            <div class="number green">3</div>
+            <p class="muted">Example security events</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Chain Status</div>
+            <div class="number yellow" id="chainStatus"
+                 style="font-size:22px">Not verified</div>
+            <p class="muted">Run the demo verification below</p>
+        </div>
+    </section>
+
+    <section class="card" style="margin-bottom:24px">
+        <h2 class="section-title">Blockchain Structure</h2>
+        <p class="section-description">
+            Each block stores an event and a link to the previous block.
+            Changing a block's data changes its hash.
+        </p>
+
+        <div class="ledger-flow" id="blockFlow">
+            <div class="block">
+                <h3>Block #0 — Genesis</h3>
+                <p><strong>Event:</strong> Ledger initialized</p>
+                <p><strong>Previous hash:</strong> None</p>
+                <p class="hash">Hash: GENESIS001</p>
+            </div>
+
+            <div class="chain-arrow">→</div>
+
+            <div class="block">
+                <h3>Block #1</h3>
+                <p><strong>Event:</strong> File integrity check</p>
+                <p><strong>Previous hash:</strong> GENESIS001</p>
+                <p class="hash">Hash: BLOCK001ABC</p>
+            </div>
+
+            <div class="chain-arrow">→</div>
+
+            <div class="block">
+                <h3>Block #2</h3>
+                <p><strong>Event:</strong> Suspicious change detected</p>
+                <p><strong>Previous hash:</strong> BLOCK001ABC</p>
+                <p class="hash">Hash: BLOCK002DEF</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2 class="section-title">Transaction History</h2>
+        <p class="section-description">
+            Example records of events added to the ledger.
+        </p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Block</th>
+                        <th>Timestamp</th>
+                        <th>Security Event</th>
+                        <th>Previous Hash</th>
+                        <th>Block Hash</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>#0</td>
+                        <td>10:00 AM</td>
+                        <td>Ledger initialized</td>
+                        <td class="hash">None</td>
+                        <td class="hash">GENESIS001</td>
+                        <td><span class="badge valid">Sample</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>#1</td>
+                        <td>10:15 AM</td>
+                        <td>File integrity checked</td>
+                        <td class="hash">GENESIS001</td>
+                        <td class="hash">BLOCK001ABC</td>
+                        <td><span class="badge valid">Sample</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>#2</td>
+                        <td>10:30 AM</td>
+                        <td>Suspicious file change detected</td>
+                        <td class="hash">BLOCK001ABC</td>
+                        <td class="hash">BLOCK002DEF</td>
+                        <td><span class="badge valid">Sample</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="notice">
+            These are illustrative records, not real cryptographic hashes.
+            This frontend does not connect to a blockchain network or persist
+            security events.
+        </div>
+
+        <div style="margin-top:20px">
+            <button onclick="verifyDemo()">Verify Demo Chain</button>
+            <div id="verifyResult" aria-live="polite"></div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+function verifyDemo() {
+    const result = document.getElementById("verifyResult");
+    const status = document.getElementById("chainStatus");
+
+    // Checks the displayed sample links only.
+    const demoLinks = [
+        { previous: "None", hash: "GENESIS001" },
+        { previous: "GENESIS001", hash: "BLOCK001ABC" },
+        { previous: "BLOCK001ABC", hash: "BLOCK002DEF" }
+    ];
+
+    let linksValid = true;
+
+    for (let i = 1; i < demoLinks.length; i++) {
+        if (demoLinks[i].previous !== demoLinks[i - 1].hash) {
+            linksValid = false;
+            break;
+        }
+    }
+
+    if (linksValid) {
+        status.textContent = "Links Connected";
+        status.style.color = "#35d9a0";
+
+        result.textContent =
+            "Demo check passed: the displayed previous-hash links " +
+            "match the preceding sample block. This does not verify " +
+            "cryptographic integrity or a real blockchain.";
+        result.style.color = "#35d9a0";
+    } else {
+        status.textContent = "Link Error";
+        status.style.color = "#ff8093";
+
+        result.textContent =
+            "Demo check failed: a previous-hash link does not match.";
+        result.style.color = "#ff8093";
+    }
+}
+</script>
+
+</body>
+</html>

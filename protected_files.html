@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIELD-Chain | Protected Files</title>
+
+<style>
+:root {
+  --bg: #020b1b;
+  --panel: #06172e;
+  --panel2: #081e39;
+  --blue: #078cff;
+  --cyan: #08d9ff;
+  --text: #f2f8ff;
+  --muted: #91bce7;
+  --green: #00edb5;
+  --red: #ff4968;
+  --orange: #ffb454;
+  --border: #0756a0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background:
+    radial-gradient(ellipse at 65% 0%, #0a2445, transparent 45%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+  min-height: 100vh;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button, a, select {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.topbar {
+  height: 78px;
+  padding: 0 27px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  background: #021027;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.shield {
+  width: 43px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  color: var(--cyan);
+  font-size: 36px;
+  filter: drop-shadow(0 0 8px #078cff70);
+}
+
+.brand h1 {
+  font-size: 24px;
+  letter-spacing: .3px;
+}
+
+.brand h1 span {
+  color: var(--cyan);
+}
+
+.brand p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.avatar {
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #08d9ff, #075bff);
+  display: grid;
+  place-items: center;
+  color: white;
+  font-weight: bold;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 225px minmax(0, 1fr);
+  min-height: calc(100vh - 78px);
+}
+
+.sidebar {
+  background: #021027;
+  border-right: 1px solid #083766;
+  padding: 24px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px;
+  border-radius: 9px;
+  color: #9ccdf7;
+  font-size: 13px;
+  transition: .2s;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: white;
+  background: linear-gradient(100deg, #087ddd, #06428b);
+}
+
+.nav-icon {
+  width: 22px;
+  text-align: center;
+  font-size: 19px;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 16px 12px;
+  border: 1px solid #104574;
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.sidebar-bottom strong {
+  display: block;
+  color: var(--cyan);
+  font-size: 14px;
+}
+
+main {
+  min-width: 0;
+  padding: 28px;
+}
+
+.page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 23px;
+}
+
+.page-heading h2 {
+  font-size: 27px;
+  margin-bottom: 8px;
+}
+
+.page-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.demo-label {
+  border: 1px solid #bd8739;
+  background: #4a3014;
+  color: #ffd18a;
+  border-radius: 20px;
+  padding: 8px 12px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.button {
+  border: 1px solid var(--border);
+  background: #082b50;
+  color: #dff5ff;
+  padding: 11px 15px;
+  border-radius: 8px;
+  font-size: 12px;
+  transition: .2s;
+}
+
+.button:hover {
+  border-color: var(--cyan);
+  background: #094171;
+}
+
+.button-primary {
+  color: #001326;
+  font-weight: 700;
+  border-color: var(--cyan);
+  background: linear-gradient(100deg, #08d9ff, #168bff);
+}
+
+.button-primary:hover {
+  background: #52e5ff;
+}
+
+.button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.message {
+  display: none;
+  margin-bottom: 18px;
+  padding: 13px 16px;
+  background: #062441;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--cyan);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.message.show {
+  display: block;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: linear-gradient(145deg, #071d37, #031126);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  min-width: 0;
+  box-shadow: inset 0 0 20px #008cff06;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 17px;
+}
+
+.card-label {
+  color: #a5c9eb;
+  font-size: 12px;
+}
+
+.card-icon {
+  font-size: 22px;
+  color: var(--cyan);
+}
+
+.card-value {
+  font-size: 30px;
+  font-weight: 650;
+  margin-bottom: 7px;
+}
+
+.card-note {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.green { color: var(--green); }
+.red { color: var(--red); }
+.orange { color: var(--orange); }
+.cyan { color: var(--cyan); }
+
+.panel {
+  background: linear-gradient(145deg, #061a33, #030f21);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 21px;
+  margin-bottom: 20px;
+  min-width: 0;
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-bottom: 20px;
+}
+
+.panel-heading h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.panel-heading p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+.section-icon {
+  color: var(--cyan);
+  margin-right: 8px;
+  font-size: 19px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.field {
+  min-width: 150px;
+  flex: 1;
+  background: #04152a;
+  color: var(--text);
+  border: 1px solid #125087;
+  border-radius: 8px;
+  padding: 11px 12px;
+  outline: none;
+  font-size: 12px;
+}
+
+.field:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px #08d9ff15;
+}
+
+select.field option {
+  background: #06172e;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 790px;
+  font-size: 12px;
+}
+
+thead {
+  background: #082343;
+}
+
+th {
+  text-align: left;
+  padding: 14px 12px;
+  color: #a8d6ff;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #12304f;
+  color: #c1dcf5;
+  vertical-align: middle;
+}
+
+tbody tr:hover {
+  background: #0a2544;
+}
+
+.file-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.file-symbol {
+  width: 35px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #1165a5;
+  border-radius: 7px;
+  color: var(--cyan);
+  background: #092644;
+  font-size: 16px;
+}
+
+.file-name strong {
+  display: block;
+  color: #e7f5ff;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.file-name small {
+  color: #7ea9d2;
+  font-size: 10px;
+}
+
+.status {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 6px 9px;
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+.status-ok {
+  border: 1px solid #00bb94;
+  background: #00bb9410;
+  color: var(--green);
+}
+
+.status-warning {
+  border: 1px solid #ce8b36;
+  background: #ce8b3610;
+  color: #ffc26c;
+}
+
+.status-danger {
+  border: 1px solid #ff4968;
+  background: #ff496810;
+  color: #ff8195;
+}
+
+.status-neutral {
+  border: 1px solid #4a77a4;
+  background: #4a77a410;
+  color: #a4c6e8;
+}
+
+.action-button {
+  background: none;
+  border: 1px solid #125087;
+  color: #78d7ff;
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-size: 11px;
+}
+
+.action-button:hover {
+  background: #07315a;
+  border-color: var(--cyan);
+}
+
+.hash {
+  color: #80caff;
+  font-family: Consolas, monospace;
+  font-size: 10px;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 17px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.empty-row {
+  text-align: center;
+  padding: 28px;
+  color: var(--muted);
+}
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.bottom-grid .panel {
+  margin-bottom: 0;
+}
+
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #12304f;
+}
+
+.folder-row:last-child {
+  border-bottom: 0;
+}
+
+.folder-icon {
+  font-size: 24px;
+  color: var(--cyan);
+}
+
+.folder-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.folder-info strong {
+  display: block;
+  color: #e4f4ff;
+  font-size: 12px;
+  margin-bottom: 5px;
+  overflow-wrap: anywhere;
+}
+
+.folder-info small {
+  color: var(--muted);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+
+.integrity-row {
+  margin-bottom: 20px;
+}
+
+.integrity-row:last-child {
+  margin-bottom: 0;
+}
+
+.integrity-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+  font-size: 12px;
+}
+
+.integrity-top span {
+  color: var(--muted);
+}
+
+.progress-track {
+  height: 8px;
+  background: #102d4b;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #08d9ff, #078cff);
+}
+
+.progress-green {
+  background: linear-gradient(90deg, #00edb5, #05a9ff);
+}
+
+.footnote {
+  margin-top: 20px;
+  color: #83a9ce;
+  font-size: 11px;
+  line-height: 1.8;
+  padding: 14px;
+  background: #04162b;
+  border: 1px solid #10375b;
+  border-radius: 9px;
+}
+
+@media (max-width: 1150px) {
+  .layout {
+    grid-template-columns: 185px minmax(0, 1fr);
+  }
+
+  main {
+    padding: 22px 17px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    padding: 12px 15px;
+    height: auto;
+  }
+
+  .brand h1 {
+    font-size: 20px;
+  }
+
+  .brand p, .top-user {
+    display: none;
+  }
+
+  .layout {
+    display: block;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 10px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-link {
+    flex-shrink: 0;
+    padding: 10px;
+    font-size: 11px;
+  }
+
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .page-heading {
+    flex-direction: column;
+  }
+
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 450px) {
+  main {
+    padding: 17px 11px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .card {
+    padding: 13px;
+  }
+
+  .card-value {
+    font-size: 24px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+  }
+
+  .field {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="shield">⬡</div>
+    <div>
+      <h1>SHIELD-<span>Chain</span></h1>
+      <p>Self-Healing Blockchain-Based Cybersecurity System</p>
+    </div>
+  </div>
+
+  <div class="top-right">
+    <span class="top-user">Protected Files</span>
+    <div class="avatar">SC</div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <a class="nav-link" href="dashboard.html">
+      <span class="nav-icon">⌂</span> Dashboard
+    </a>
+    <a class="nav-link" href="threat_detection.html">
+      <span class="nav-icon">⚠</span> Threat Detection
+    </a>
+    <a class="nav-link active" href="protected_files.html">
+      <span class="nav-icon">▤</span> Protected Files
+    </a>
+    <a class="nav-link" href="recovery.html">
+      <span class="nav-icon">⟳</span> Recovery
+    </a>
+    <a class="nav-link" href="blockchain_ledger.html">
+      <span class="nav-icon">⬡</span> Blockchain Ledger
+    </a>
+    <a class="nav-link" href="incident_history.html">
+      <span class="nav-icon">◷</span> Incident History
+    </a>
+    <a class="nav-link" href="settings.html">
+      <span class="nav-icon">⚙</span> Settings
+    </a>
+
+    <div class="sidebar-bottom">
+      <strong>⬡ SHIELD-Chain</strong>
+      File Integrity Protection<br>
+      SHA-256 Verification
+    </div>
+  </aside>
+
+  <main>
+
+    <div class="page-heading">
+      <div>
+        <h2>Protected Files</h2>
+        <p>
+          Monitor file activity, verify integrity, and identify
+          unexpected changes in protected files.
+        </p>
+      </div>
+      <span class="demo-label">● DEMO DATA</span>
+    </div>
+
+    <div class="message" id="message" role="status"></div>
+
+    <!-- SUMMARY CARDS -->
+
+    <section class="cards">
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-label">Monitored Files</span>
+          <span class="card-icon">▤</span>
+        </div>
+        <div class="card-value cyan" id="totalFiles">48</div>
+        <div class="card-note">Illustrative monitored file count</div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-label">Integrity Verified</span>
+          <span class="card-icon green">✓</span>
+        </div>
+        <div class="card-value green" id="verifiedFiles">44</div>
+        <div class="card-note">Sample files matching trusted hashes</div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-label">Modified Files</span>
+          <span class="card-icon orange">⚠</span>
+        </div>
+        <div class="card-value orange" id="modifiedFiles">3</div>
+        <div class="card-note">Sample changes requiring review</div>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-label">Quarantined</span>
+          <span class="card-icon red">⛨</span>
+        </div>
+        <div class="card-value red" id="quarantinedFiles">1</div>
+        <div class="card-note">Sample quarantine count</div>
+      </article>
+
+    </section>
+
+    <!-- FILE TABLE -->
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h3><span class="section-icon">▤</span>File Integrity Overview</h3>
+          <p>Search files, filter status, and inspect sample SHA-256 values.</p>
+        </div>
+
+        <button class="button button-primary" id="scanButton">
+          ⟳ Run Demo Scan
+        </button>
+      </div>
+
+      <div class="toolbar">
+        <input
+          class="field"
+          id="searchInput"
+          type="search"
+          placeholder="⌕ Search filename or folder..."
+          aria-label="Search files"
+        >
+
+        <select class="field" id="statusFilter" aria-label="Filter by status">
+          <option value="all">All statuses</option>
+          <option value="Verified">Verified</option>
+          <option value="Modified">Modified</option>
+          <option value="Quarantined">Quarantined</option>
+        </select>
+
+        <select class="field" id="typeFilter" aria-label="Filter by file type">
+          <option value="all">All file types</option>
+          <option value="Document">Documents</option>
+          <option value="Configuration">Configuration</option>
+          <option value="Image">Images</option>
+          <option value="Application">Applications</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>FILE / LOCATION</th>
+              <th>TYPE</th>
+              <th>LAST EVENT</th>
+              <th>INTEGRITY</th>
+              <th>SHA-256 HASH</th>
+              <th>ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="fileTable"></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <span id="resultCount">Showing 6 sample files</span>
+        <button class="button" id="resetFilters">Reset Filters</button>
+      </div>
+    </section>
+
+    <!-- LOWER PANELS -->
+
+    <section class="bottom-grid">
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h3><span class="section-icon">▱</span>Monitored Locations</h3>
+            <p>Example folders selected for file monitoring.</p>
+          </div>
+        </div>
+
+        <div class="folder-row">
+          <div class="folder-icon">📁</div>
+          <div class="folder-info">
+            <strong>Documents</strong>
+            <small>C:\Protected\Documents</small>
+          </div>
+          <span class="status status-ok">Sample</span>
+        </div>
+
+        <div class="folder-row">
+          <div class="folder-icon">📁</div>
+          <div class="folder-info">
+            <strong>Configuration</strong>
+            <small>C:\Protected\Config</small>
+          </div>
+          <span class="status status-ok">Sample</span>
+        </div>
+
+        <div class="folder-row">
+          <div class="folder-icon">📁</div>
+          <div class="folder-info">
+            <strong>Project Files</strong>
+            <small>C:\Protected\Projects</small>
+          </div>
+          <span class="status status-ok">Sample</span>
+        </div>
+
+        <button class="button" style="width:100%;margin-top:15px"
+                id="folderButton">
+          + Configure Folders
+        </button>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <h3><span class="section-icon">◉</span>Integrity Summary</h3>
+            <p>Illustrative breakdown of the six visible sample records.</p>
+          </div>
+        </div>
+
+        <div class="integrity-row">
+          <div class="integrity-top">
+            <span>Verified Files</span>
+            <strong class="green">3 / 6</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress progress-green" style="width:50%"></div>
+          </div>
+        </div>
+
+        <div class="integrity-row">
+          <div class="integrity-top">
+            <span>Modified Files</span>
+            <strong class="orange">2 / 6</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress" style="width:33%;background:#ffb454"></div>
+          </div>
+        </div>
+
+        <div class="integrity-row">
+          <div class="integrity-top">
+            <span>Quarantined Files</span>
+            <strong class="red">1 / 6</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress" style="width:17%;background:#ff4968"></div>
+          </div>
+        </div>
+
+        <div class="footnote">
+          <strong>SHA-256 integrity checking</strong><br>
+          The agent calculates each file's current hash and compares it
+          with a previously trusted baseline. A mismatch means the file
+          changed; it does not, by itself, prove malicious activity.
+        </div>
+      </article>
+
+    </section>
+
+    <div class="footnote">
+      <strong>Prototype notice:</strong>
+      All filenames, paths, hashes, counts, and statuses on this page
+      are illustrative. No real files are scanned, modified, deleted,
+      quarantined, or restored by this standalone HTML page.
+    </div>
+
+  </main>
+</div>
+
+<script>
+/*
+  FRONTEND DEMO ONLY
+
+  Later, replace this sample array with data from your backend API.
+  The browser page cannot independently monitor your computer's files.
+*/
+
+const files = [
+  {
+    name: "report.docx",
+    path: "Documents/",
+    type: "Document",
+    event: "No change detected",
+    status: "Verified",
+    hash: "a7f3c2d9...e81b4f20"
+  },
+  {
+    name: "config.json",
+    path: "Config/",
+    type: "Configuration",
+    event: "Content modified",
+    status: "Modified",
+    hash: "b84d09a1...c5127e30"
+  },
+  {
+    name: "project_notes.txt",
+    path: "Documents/",
+    type: "Document",
+    event: "No change detected",
+    status: "Verified",
+    hash: "c21f68e5...9a40d163"
+  },
+  {
+    name: "system_backup.zip",
+    path: "Backups/",
+    type: "Application",
+    event: "Quarantine example",
+    status: "Quarantined",
+    hash: "d93a71c0...b14e6028"
+  },
+  {
+    name: "logo.png",
+    path: "Projects/",
+    type: "Image",
+    event: "No change detected",
+    status: "Verified",
+    hash: "e52b49a7...8f2036d1"
+  },
+  {
+    name: "settings.json",
+    path: "Config/",
+    type: "Configuration",
+    event: "Hash mismatch",
+    status: "Modified",
+    hash: "f10c83d2...4a9b713e"
+  }
+];
+
+const table = document.getElementById("fileTable");
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+const typeFilter = document.getElementById("typeFilter");
+const message = document.getElementById("message");
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
+
+function statusClass(status) {
+  if (status === "Verified") return "status-ok";
+  if (status === "Modified") return "status-warning";
+  return "status-danger";
+}
+
+function renderFiles() {
+  const query = searchInput.value.toLowerCase().trim();
+  const selectedStatus = statusFilter.value;
+  const selectedType = typeFilter.value;
+
+  const filtered = files.filter(file => {
+    const matchesSearch =
+      file.name.toLowerCase().includes(query) ||
+      file.path.toLowerCase().includes(query);
+
+    const matchesStatus =
+      selectedStatus === "all" || file.status === selectedStatus;
+
+    const matchesType =
+      selectedType === "all" || file.type === selectedType;
+
+    return matchesSearch && matchesStatus && matchesType;
+  });
+
+  table.innerHTML = "";
+
+  if (filtered.length === 0) {
+    table.innerHTML = `
+      <tr>
+        <td colspan="6" class="empty-row">
+          No sample files match your search.
+        </td>
+      </tr>`;
+  } else {
+    filtered.forEach(file => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>
+          <div class="file-name">
+            <div class="file-symbol">▤</div>
+            <div>
+              <strong>${escapeHTML(file.name)}</strong>
+              <small>${escapeHTML(file.path)}</small>
+            </div>
+          </div>
+        </td>
+        <td>${escapeHTML(file.type)}</td>
+        <td>${escapeHTML(file.event)}</td>
+        <td>
+          <span class="status ${statusClass(file.status)}">
+            ${escapeHTML(file.status)}
+          </span>
+        </td>
+        <td><span class="hash">${escapeHTML(file.hash)}</span></td>
+        <td>
+          <button class="action-button"
+            data-file="${escapeHTML(file.name)}">Details</button>
+        </td>`;
+
+      table.appendChild(row);
+    });
+  }
+
+  document.getElementById("resultCount").textContent =
+    `Showing ${filtered.length} of ${files.length} sample files`;
+}
+
+function showMessage(text) {
+  message.textContent = text;
+  message.classList.add("show");
+  message.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+searchInput.addEventListener("input", renderFiles);
+statusFilter.addEventListener("change", renderFiles);
+typeFilter.addEventListener("change", renderFiles);
+
+document.getElementById("resetFilters").addEventListener("click", () => {
+  searchInput.value = "";
+  statusFilter.value = "all";
+  typeFilter.value = "all";
+  renderFiles();
+});
+
+table.addEventListener("click", event => {
+  const button = event.target.closest("[data-file]");
+  if (!button) return;
+
+  const file = files.find(item => item.name === button.dataset.file);
+  if (!file) return;
+
+  showMessage(
+    `Sample details for ${file.name}: ${file.event}. ` +
+    `Status: ${file.status}. The displayed hash is illustrative, ` +
+    `not a calculated hash from the real file.`
+  );
+});
+
+document.getElementById("scanButton").addEventListener("click", () => {
+  showMessage(
+    "Demo only: no files were scanned. Connect the Python monitoring " +
+    "agent and backend to run real SHA-256 integrity checks."
+  );
+});
+
+document.getElementById("folderButton").addEventListener("click", () => {
+  showMessage(
+    "Folder configuration is not connected yet. Later, use the backend " +
+    "to select and authorize folders for monitoring by the Python agent."
+  );
+});
+
+renderFiles();
+</script>
+
+</body>
+</html>

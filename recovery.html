@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIELD-Chain | Recovery</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #080f1e;
+    color: #e5edf8;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #0d1729;
+    border-right: 1px solid #1d3048;
+    padding: 28px 18px;
+}
+
+.logo {
+    color: #35d9f5;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 8px 10px;
+}
+
+.subtitle {
+    color: #8293ac;
+    font-size: 11px;
+    margin: 0 0 35px 10px;
+    letter-spacing: 1px;
+}
+
+.nav {
+    display: block;
+    color: #9cabc1;
+    text-decoration: none;
+    padding: 14px 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.nav:hover,
+.nav.active {
+    background: #142c40;
+    color: #35d9f5;
+}
+
+.main {
+    margin-left: 245px;
+    padding: 32px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.topbar h1 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: #8293ac;
+    font-size: 13px;
+}
+
+.status {
+    color: #35d9a0;
+    background: #10332f;
+    border: 1px solid #20554b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.card {
+    background: #101c30;
+    border: 1px solid #20334d;
+    border-radius: 12px;
+    padding: 22px;
+    min-width: 0;
+}
+
+.card-title {
+    color: #91a3bc;
+    font-size: 13px;
+    margin-bottom: 17px;
+}
+
+.number {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.green {
+    color: #35d9a0;
+}
+
+.cyan {
+    color: #35d9f5;
+}
+
+.yellow {
+    color: #f5c451;
+}
+
+.section-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.section-description {
+    color: #8293ac;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+th {
+    text-align: left;
+    color: #8293ac;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 15px 12px;
+    border-bottom: 1px solid #263951;
+}
+
+td {
+    padding: 17px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid #1d2c42;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+}
+
+.completed {
+    background: #10352f;
+    color: #35d9a0;
+}
+
+.pending {
+    background: #382d17;
+    color: #f5c451;
+}
+
+.failed {
+    background: #3b202b;
+    color: #ff8093;
+}
+
+button {
+    background: #103443;
+    color: #35d9f5;
+    border: 1px solid #236078;
+    padding: 8px 11px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+button:hover {
+    background: #17475a;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.info {
+    margin-top: 24px;
+    line-height: 1.7;
+    color: #9aabc2;
+    font-size: 13px;
+}
+
+.info strong {
+    color: #35d9f5;
+}
+
+.notice {
+    margin-top: 18px;
+    padding: 13px 15px;
+    background: #14283b;
+    border: 1px solid #24445c;
+    color: #a9c2d7;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 190px;
+    }
+
+    .main {
+        margin-left: 190px;
+        padding: 22px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 18px;
+    }
+
+    .subtitle {
+        margin-bottom: 15px;
+    }
+
+    .nav {
+        display: inline-block;
+        padding: 10px;
+        margin: 2px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 18px;
+    }
+
+    .topbar h1 {
+        font-size: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">⬡ SHIELD-Chain</div>
+    <div class="subtitle">CYBERSECURITY PLATFORM</div>
+
+    <a class="nav" href="dashboard.html">⌂ &nbsp; Dashboard</a>
+    <a class="nav" href="tdetection.html">⛨ &nbsp; Threat Detection</a>
+    <a class="nav" href="protected_files.html">▤ &nbsp; Protected Files</a>
+    <a class="nav active" href="recovery.html">⟳ &nbsp; Recovery</a>
+    <a class="nav" href="ledger.html">⬡ &nbsp; Blockchain Ledger</a>
+    <a class="nav" href="settings.html">⚙ &nbsp; Settings</a>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div>
+            <h1>Recovery Center</h1>
+            <p class="muted">Monitor file recovery and system restoration events.</p>
+        </div>
+        <div class="status">● Recovery Module Ready</div>
+    </header>
+
+    <section class="stats">
+        <div class="card">
+            <div class="card-title">Successful Recoveries</div>
+            <div class="number green" id="successCount">12</div>
+            <p class="muted">Sample demonstration data</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Pending Recovery</div>
+            <div class="number yellow" id="pendingCount">2</div>
+            <p class="muted">Awaiting review</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Files Requiring Attention</div>
+            <div class="number cyan" id="attentionCount">1</div>
+            <p class="muted">Needs manual inspection</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2 class="section-title">Recovery History</h2>
+        <p class="section-description">
+            Review recovery events and their current status.
+        </p>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>File Name</th>
+                        <th>Detected Event</th>
+                        <th>Recovery Status</th>
+                        <th>Last Updated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="recoveryTable">
+                    <tr>
+                        <td>report.pdf</td>
+                        <td>Unexpected change</td>
+                        <td><span class="badge completed">Recovered (Demo)</span></td>
+                        <td>10:30 AM</td>
+                        <td><button disabled>Completed</button></td>
+                    </tr>
+
+                    <tr>
+                        <td>config.json</td>
+                        <td>Integrity mismatch</td>
+                        <td><span class="badge pending">Pending Review</span></td>
+                        <td>10:45 AM</td>
+                        <td>
+                            <button onclick="reviewRecovery(this)">
+                                Mark Reviewed
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>backup.zip</td>
+                        <td>File unavailable</td>
+                        <td><span class="badge failed">Needs Attention</span></td>
+                        <td>11:00 AM</td>
+                        <td>
+                            <button onclick="reviewRecovery(this)">
+                                Mark Reviewed
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="notice">
+            <strong>Important:</strong> These entries are sample data.
+            Marking an event reviewed does not restore a file or modify
+            the actual filesystem.
+        </div>
+    </section>
+
+    <section class="card" style="margin-top:24px">
+        <h2 class="section-title">Recovery Workflow</h2>
+        <p class="section-description">
+            How SHIELD-Chain is intended to handle a suspicious file change.
+        </p>
+
+        <p class="info">
+            <strong>Step 1:</strong> Detect an unexpected file change.<br>
+            <strong>Step 2:</strong> Verify the file's integrity and review
+            the security event.<br>
+            <strong>Step 3:</strong> Identify a trusted backup, if available.<br>
+            <strong>Step 4:</strong> Obtain authorization before restoring
+            the file.<br>
+            <strong>Step 5:</strong> Record the recovery result in the
+            security event history.
+        </p>
+    </section>
+
+</main>
+
+<script>
+function reviewRecovery(button) {
+    const row = button.closest("tr");
+    const statusCell = row.cells[2];
+
+    statusCell.innerHTML =
+        '<span class="badge completed">Reviewed (Demo)</span>';
+
+    button.textContent = "Reviewed";
+    button.disabled = true;
+
+    alert(
+        "Demo action completed. The event is marked as reviewed. " +
+        "No actual file has been restored."
+    );
+}
+</script>
+
+</body>
+</html>

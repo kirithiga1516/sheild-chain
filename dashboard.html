@@ -1,0 +1,1246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIELD-Chain | Security Dashboard</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #020b1b;
+  --panel: #03152c;
+  --panel2: #061a33;
+  --blue: #078cff;
+  --cyan: #08d9ff;
+  --text: #f2f8ff;
+  --muted: #91bce7;
+  --green: #00edc3;
+  --red: #ff3659;
+  --orange: #ff9b35;
+  --border: #0756a0;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 70% 0%, #09264b 0%, transparent 45%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: #35bfff;
+  text-decoration: none;
+}
+
+/* Top navigation */
+
+.topbar {
+  min-height: 83px;
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  background: #021027;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.logo {
+  width: 49px;
+  height: 55px;
+  color: var(--cyan);
+  filter: drop-shadow(0 0 8px #008cff80);
+}
+
+.brand h1 {
+  font-size: 26px;
+  white-space: nowrap;
+}
+
+.brand h1 span {
+  color: var(--cyan);
+}
+
+.brand-description {
+  border-left: 1px solid #1675bd;
+  margin-left: 10px;
+  padding-left: 20px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.icon-button {
+  border: 0;
+  color: var(--cyan);
+  background: transparent;
+  font-size: 22px;
+  position: relative;
+}
+
+.notification-dot {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 50%;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d9eaff;
+  font-size: 13px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #04baff, #075bff);
+  font-weight: bold;
+}
+
+/* Main layout */
+
+.app {
+  display: grid;
+  grid-template-columns: 235px minmax(0, 1fr);
+  min-height: calc(100vh - 83px);
+}
+
+.sidebar {
+  padding: 25px 14px;
+  background: #021027;
+  border-right: 1px solid #083766;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 16px;
+  margin-bottom: 5px;
+  border-radius: 10px;
+  color: #91d1ff;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.nav-link .nav-icon {
+  font-size: 21px;
+  width: 25px;
+  text-align: center;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: linear-gradient(100deg, #087ddd, #06428b);
+  color: white;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 18px 12px;
+  border: 1px solid #064781;
+  border-radius: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 12px;
+}
+
+.sidebar-footer strong {
+  color: var(--cyan);
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+/* Dashboard content */
+
+main {
+  min-width: 0;
+  padding: 30px 26px;
+}
+
+.welcome-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 28px;
+}
+
+.welcome-row h2 {
+  font-size: 27px;
+  margin-bottom: 8px;
+}
+
+.welcome-row p {
+  color: #5cbaff;
+  font-size: 15px;
+}
+
+.date-info {
+  text-align: right;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 2;
+  white-space: nowrap;
+}
+
+.live {
+  color: var(--green);
+}
+
+.live::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: var(--green);
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 10px var(--green);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 17px;
+}
+
+.panel {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #0663b5;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #031a35, #020e21);
+  box-shadow: inset 0 0 22px #006dff08;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 23px;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 17px;
+}
+
+.panel-icon {
+  width: 37px;
+  height: 37px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #064b91;
+  box-shadow: 0 0 15px #008cff45;
+  font-size: 21px;
+}
+
+.badge {
+  padding: 7px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.badge-green {
+  border: 1px solid #00dcb9;
+  color: var(--green);
+  background: #00dcb910;
+}
+
+.badge-red {
+  border: 1px solid #ff3659;
+  color: #ff7188;
+  background: #ff365910;
+}
+
+.security-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 155px;
+}
+
+.security-ring {
+  width: 130px;
+  height: 130px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 7px solid #057dba;
+  border-top-color: var(--green);
+  box-shadow: 0 0 18px #00bfff20, inset 0 0 20px #00cfff15;
+  color: var(--green);
+  font-size: 49px;
+}
+
+.security-summary h3 {
+  color: var(--green);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.security-summary p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.status-grid {
+  border-top: 1px solid #10416c;
+  padding-top: 20px;
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.status-item {
+  font-size: 11px;
+  color: #9ecfff;
+}
+
+.status-item strong {
+  display: block;
+  color: var(--green);
+  margin-top: 9px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.status-item strong::before {
+  content: "● ";
+}
+
+/* Threat detection */
+
+.threat-overview {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 23px;
+}
+
+.threat-ring {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 9px solid #19284e;
+  border-top-color: var(--red);
+  border-right-color: var(--red);
+  transform: rotate(-25deg);
+  display: grid;
+  place-items: center;
+}
+
+.threat-ring div {
+  transform: rotate(25deg);
+  text-align: center;
+}
+
+.threat-ring strong {
+  display: block;
+  font-size: 29px;
+}
+
+.threat-ring span {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.risk-list {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #0c3b68;
+  border-radius: 10px;
+}
+
+.risk-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #9bc9f1;
+  font-size: 11px;
+  margin: 10px 0;
+}
+
+.risk-row strong {
+  margin-left: auto;
+  color: white;
+}
+
+.risk-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.red { background: var(--red); }
+.orange { background: var(--orange); }
+.blue { background: #00b7ff; }
+
+.subheading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 0;
+  border-top: 1px solid #10375b;
+  color: #a6d5ff;
+  font-size: 13px;
+}
+
+.alert-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 11px 0;
+  border-bottom: 1px solid #102d4c;
+  font-size: 10px;
+}
+
+.alert-name {
+  color: #b5d7f6;
+}
+
+.alert-level {
+  color: var(--red);
+}
+
+/* Protected files */
+
+.file-overview {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  margin-bottom: 24px;
+}
+
+.file-ring {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  border: 9px solid #057ab1;
+  border-top-color: #04c9ff;
+  border-right-color: #04c9ff;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.file-ring strong {
+  font-size: 20px;
+}
+
+.file-ring span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.file-stats {
+  flex: 1;
+}
+
+.file-stats div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  justify-content: space-between;
+  margin: 16px 0;
+  font-size: 12px;
+  color: #a9d4f8;
+}
+
+.file-stats b {
+  color: white;
+}
+
+.progress-track {
+  height: 10px;
+  background: #103456;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 15px 0 12px;
+}
+
+.progress-fill {
+  width: 96%;
+  height: 100%;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #00caff, #0780ff);
+  box-shadow: 0 0 12px #00caff75;
+}
+
+.progress-label {
+  font-size: 13px;
+  color: #6ed4ff;
+}
+
+.scan-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #10375b;
+}
+
+.scan-info div {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+/* Lower panels */
+
+.lower-cards {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.metric {
+  padding: 15px 10px;
+  border: 1px solid #104b80;
+  border-radius: 10px;
+  text-align: center;
+  background: #04162d;
+}
+
+.metric-icon {
+  font-size: 25px;
+  color: var(--cyan);
+  margin-bottom: 9px;
+}
+
+.metric strong {
+  display: block;
+  font-size: 23px;
+  margin-bottom: 5px;
+}
+
+.metric span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.recovery-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 0;
+  border-bottom: 1px solid #10375b;
+  color: #b1d8f8;
+  font-size: 12px;
+}
+
+.recovery-row span:last-child {
+  color: var(--muted);
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+.success-dot {
+  color: var(--green);
+  margin-right: 9px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 510px;
+  font-size: 11px;
+}
+
+th {
+  padding: 13px 9px;
+  background: #062345;
+  color: #a6d5ff;
+  font-weight: 500;
+  text-align: left;
+}
+
+th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+td {
+  padding: 13px 9px;
+  border-bottom: 1px solid #103253;
+  color: #a9d4f6;
+  white-space: nowrap;
+}
+
+.confirmed {
+  display: inline-block;
+  padding: 5px 8px;
+  border: 1px solid #00cda9;
+  border-radius: 15px;
+  color: var(--green);
+  font-size: 10px;
+}
+
+.tx-hash {
+  color: #43baff;
+  text-decoration: underline;
+}
+
+.ledger-note {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 15px;
+  margin-top: 16px;
+  border: 1px solid #10406c;
+  border-radius: 10px;
+  background: #041932;
+  color: #8fcaff;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* Click interactions */
+
+.view-link {
+  color: #42c5ff;
+  background: none;
+  border: none;
+  font-size: 11px;
+}
+
+.notice {
+  display: none;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  color: var(--cyan);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #041b35;
+}
+
+.notice.show {
+  display: block;
+}
+
+@media (max-width: 1200px) {
+  .app {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+
+  main {
+    padding: 25px 18px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .security-panel {
+    grid-column: span 2;
+  }
+
+  .lower-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-description {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    padding: 12px 15px;
+  }
+
+  .brand h1 {
+    font-size: 21px;
+  }
+
+  .profile-name {
+    display: none;
+  }
+
+  .app {
+    display: block;
+  }
+
+  .sidebar {
+    position: static;
+    padding: 10px;
+    flex-direction: row;
+    gap: 7px;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-link {
+    flex-shrink: 0;
+    padding: 10px 12px;
+    margin: 0;
+    font-size: 12px;
+  }
+
+  .nav-link .nav-icon {
+    font-size: 16px;
+    width: auto;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .welcome-row {
+    flex-direction: column;
+  }
+
+  .date-info {
+    text-align: left;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .security-panel {
+    grid-column: auto;
+  }
+
+  .security-summary {
+    flex-wrap: wrap;
+  }
+
+  .lower-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  main {
+    padding: 20px 12px;
+  }
+
+  .brand h1 {
+    font-size: 18px;
+  }
+
+  .logo {
+    width: 37px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .panel-heading {
+    font-size: 14px;
+  }
+
+  .security-ring {
+    width: 100px;
+    height: 100px;
+  }
+
+  .threat-overview,
+  .file-overview {
+    gap: 10px;
+  }
+
+  .threat-ring,
+  .file-ring {
+    width: 105px;
+    height: 105px;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .status-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 100 115" fill="none">
+      <path d="M50 5 L91 21 V51 C91 78 73 98 50 109
+      C27 98 9 78 9 51 V21 Z"
+      stroke="currentColor" stroke-width="7"/>
+      <g transform="translate(29 38) rotate(-35 21 18)"
+      stroke="currentColor" stroke-width="7" fill="none">
+        <rect x="0" y="10" width="25" height="18" rx="9"/>
+        <rect x="17" y="10" width="25" height="18" rx="9"/>
+      </g>
+    </svg>
+    <h1>SHIELD-<span>Chain</span></h1>
+    <div class="brand-description">
+      Self-Healing Blockchain-Based<br>
+      Cybersecurity System
+    </div>
+  </div>
+
+  <div class="top-right">
+    <button class="icon-button" id="notifications"
+            aria-label="Notifications">
+      ♧ <span class="notification-dot">1</span>
+    </button>
+    <div class="profile">
+      <div class="avatar">SC</div>
+      <span class="profile-name">Security Reviewer⌄</span>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a href="#dashboard" class="nav-link active">
+      <span class="nav-icon">⌂</span> Dashboard
+    </a>
+    <a href="tdetection.html" class="nav-link">
+  <span class="nav-icon">♢</span> Threat Detection
+</a>
+    <a href="#files" class="nav-link">
+      <span class="nav-icon">▱</span> Protected Files
+    </a>
+    <a href="#recovery" class="nav-link">
+      <span class="nav-icon">⟳</span> Recovery
+    </a>
+    <a href="#ledger" class="nav-link">
+      <span class="nav-icon">⬡</span> Blockchain Ledger
+    </a>
+    <a href="#settings" class="nav-link">
+      <span class="nav-icon">⚙</span> Settings
+    </a>
+    <a href="profile.html" class="nav-link">
+    <span class="nav-icon">👤</span> User Profile
+</a>
+
+    <div class="sidebar-footer">
+      <strong>⬡ SHIELD-Chain</strong>
+      Your data.<br>
+      Our protection.
+    </div>
+  </aside>
+
+  <main id="dashboard">
+
+    <div class="welcome-row">
+      <div>
+        <h2>Welcome Back, Reviewer</h2>
+        <p>Here's what's happening with your security system.</p>
+      </div>
+      <div class="date-info">
+        <div id="currentDate">Loading date...</div>
+        <div class="live">Demo Dashboard</div>
+      </div>
+    </div>
+
+    <div class="notice" id="notice" role="status"></div>
+
+    <!-- TOP ROW -->
+    <section class="cards">
+
+      <!-- 1. System Security Status -->
+      <article class="panel security-panel" id="security">
+        <div class="panel-title">
+          <div class="panel-heading">
+            <span class="panel-icon">⬡</span>
+            System Security Status
+          </div>
+          <span class="badge badge-green">● Demo Active</span>
+        </div>
+
+        <div class="security-summary">
+          <div class="security-ring">✓</div>
+          <div>
+            <h3>Dashboard Demo Ready</h3>
+            <p>
+              This interface is displaying sample data.
+              Live monitoring will be available after
+              connecting the Python monitoring agent.
+            </p>
+          </div>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-item">
+            Monitoring
+            <strong>Demo</strong>
+          </div>
+          <div class="status-item">
+            Threat Detection
+            <strong>Demo</strong>
+          </div>
+          <div class="status-item">
+            Auto Recovery
+            <strong>Demo</strong>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. Threat Detection -->
+      <article class="panel" id="threats">
+        <div class="panel-title">
+          <div class="panel-heading">
+            <span class="panel-icon">⚠</span>
+            Threat Detection
+          </div>
+          <span class="badge badge-red">3 Sample Alerts</span>
+        </div>
+
+        <div class="threat-overview">
+          <div class="threat-ring">
+            <div>
+              <strong>3</strong>
+              <span>Sample Alerts</span>
+            </div>
+          </div>
+
+          <div class="risk-list">
+            <div class="risk-row">
+              <span class="risk-dot red"></span>
+              High Risk <strong>1</strong>
+            </div>
+            <div class="risk-row">
+              <span class="risk-dot orange"></span>
+              Medium Risk <strong>1</strong>
+            </div>
+            <div class="risk-row">
+              <span class="risk-dot blue"></span>
+              Low Risk <strong>1</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="subheading">
+          <strong>Recent Sample Alerts</strong>
+          <button class="view-link" data-message="Threat alert list opened.">
+            View All →
+          </button>
+        </div>
+
+        <div class="alert-row">
+          <span class="alert-name">🔴 Suspicious file modification</span>
+          <span class="alert-level">High</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">🟠 Unusual login attempt</span>
+          <span style="color:var(--orange)">Medium</span>
+        </div>
+        <div class="alert-row">
+          <span class="alert-name">🔵 Unusual file activity</span>
+          <span style="color:#00b7ff">Low</span>
+        </div>
+      </article>
+
+      <!-- 3. Protected Files -->
+      <article class="panel" id="files">
+        <div class="panel-title">
+          <div class="panel-heading">
+            <span class="panel-icon">▰</span>
+            Protected Files
+          </div>
+        </div>
+
+        <div class="file-overview">
+          <div class="file-ring">
+            <div>
+              <strong>48 / 50</strong><br>
+              <span>Sample Files</span>
+            </div>
+          </div>
+
+          <div class="file-stats">
+            <div><span>✓ Integrity OK</span><b>46</b></div>
+            <div><span>⚠ Modified</span><b>2</b></div>
+            <div><span>⊘ Quarantined</span><b>0</b></div>
+          </div>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+        </div>
+        <p class="progress-label">96% Sample Integrity Result</p>
+
+        <div class="scan-info">
+          <div>◷ Sample last scan<br>Not connected</div>
+          <div>◷ Next scan<br>Not scheduled</div>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- BOTTOM ROW -->
+    <section class="lower-cards">
+
+      <!-- 4. Self-Healing & Recovery -->
+      <article class="panel" id="recovery">
+        <div class="panel-title">
+          <div class="panel-heading">
+            <span class="panel-icon">⟳</span>
+            Self-Healing &amp; Recovery
+          </div>
+          <span class="badge badge-green">Demo</span>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-icon">✓</div>
+            <strong>3</strong>
+            <span>Sample Recoveries</span>
+          </div>
+          <div class="metric">
+            <div class="metric-icon">▤</div>
+            <strong>2</strong>
+            <span>Sample Restores</span>
+          </div>
+          <div class="metric">
+            <div class="metric-icon">⬡</div>
+            <strong>100%</strong>
+            <span>Sample SHA-256</span>
+          </div>
+        </div>
+
+        <div class="subheading">
+          <strong>Sample Recovery Activity</strong>
+          <button class="view-link" data-message="Recovery activity opened.">
+            View All →
+          </button>
+        </div>
+
+        <div class="recovery-row">
+          <span><span class="success-dot">●</span>File recovery example: report.docx</span>
+          <span>Sample</span>
+        </div>
+        <div class="recovery-row">
+          <span><span class="success-dot">●</span>Restore example: config.json</span>
+          <span>Sample</span>
+        </div>
+        <div class="recovery-row">
+          <span><span class="success-dot">●</span>Integrity example: image.png</span>
+          <span>Sample</span>
+        </div>
+      </article>
+
+      <!-- 5. Blockchain Audit Ledger -->
+      <article class="panel" id="ledger">
+        <div class="panel-title">
+          <div class="panel-heading">
+            <span class="panel-icon">⬡</span>
+            Blockchain Audit Ledger
+          </div>
+          <button class="view-link"
+                  data-message="Full audit ledger requires backend integration.">
+            View All →
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Event</th>
+                <th>Source</th>
+                <th>Status</th>
+                <th>Tx Hash</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sample 07:32</td>
+                <td>Threat detected</td>
+                <td>System</td>
+                <td><span class="confirmed">● Demo</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Sample 07:28</td>
+                <td>File recovered</td>
+                <td>Recovery</td>
+                <td><span class="confirmed">● Demo</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Sample 06:45</td>
+                <td>Login event</td>
+                <td>User</td>
+                <td><span class="confirmed">● Demo</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Sample 05:21</td>
+                <td>File modified</td>
+                <td>System</td>
+                <td><span class="confirmed">● Demo</span></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Sample 04:17</td>
+                <td>Integrity check</td>
+                <td>System</td>
+                <td><span class="confirmed">● Demo</span></td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ledger-note">
+          <span style="font-size:25px;color:var(--cyan)">⬡</span>
+          <span>
+            This is a sample ledger view. Real audit entries and
+            transaction hashes will appear after blockchain
+            integration.
+          </span>
+        </div>
+      </article>
+
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Display the current date and time.
+  function updateDate() {
+    const now = new Date();
+
+    document.getElementById("currentDate").textContent =
+      now.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }) + "  " +
+      now.toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+  }
+
+  updateDate();
+
+  // Sidebar navigation highlighting.
+  const navLinks = document.querySelectorAll(".nav-link");
+
+  navLinks.forEach(link => {
+    link.addEventListener("click", function () {
+      navLinks.forEach(item => item.classList.remove("active"));
+      this.classList.add("active");
+
+      const target = document.querySelector(this.getAttribute("href"));
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+
+      if (this.getAttribute("href") === "#settings") {
+        showNotice(
+          "Settings page has not been implemented yet."
+        );
+      }
+    });
+  });
+
+  // Dashboard demo messages.
+  function showNotice(text) {
+    const notice = document.getElementById("notice");
+    notice.textContent = text;
+    notice.classList.add("show");
+    notice.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  document.querySelectorAll("[data-message]").forEach(button => {
+    button.addEventListener("click", () => {
+      showNotice(button.dataset.message);
+    });
+  });
+
+  document.getElementById("notifications").addEventListener(
+    "click", () => {
+      showNotice(
+        "Notifications are sample data. Connect the backend to receive live alerts."
+      );
+    }
+  );
+</script>
+
+</body>
+</html>

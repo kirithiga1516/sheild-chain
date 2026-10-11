@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHIELD-Chain | Settings</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #080f1e;
+    color: #e5edf8;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 245px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #0d1729;
+    border-right: 1px solid #20334d;
+    padding: 28px 18px;
+}
+
+.logo {
+    color: #35d9f5;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 8px 10px;
+}
+
+.subtitle {
+    color: #8293ac;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin: 0 0 35px 10px;
+}
+
+.nav {
+    display: block;
+    color: #9cabc1;
+    text-decoration: none;
+    padding: 14px 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.nav:hover,
+.nav.active {
+    background: #142c40;
+    color: #35d9f5;
+}
+
+.main {
+    margin-left: 245px;
+    padding: 32px;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.muted {
+    color: #8293ac;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.status {
+    color: #f5c451;
+    background: #382d17;
+    border: 1px solid #665022;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.card {
+    background: #101c30;
+    border: 1px solid #20334d;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.section-description {
+    color: #8293ac;
+    font-size: 13px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.field {
+    margin-bottom: 22px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 9px;
+    color: #d8e3f2;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    background: #0b1526;
+    color: #e5edf8;
+    border: 1px solid #2a405c;
+    border-radius: 7px;
+    padding: 12px;
+    font-size: 13px;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #35d9f5;
+}
+
+.help {
+    font-size: 12px;
+    color: #8293ac;
+    margin-top: 8px;
+    line-height: 1.6;
+}
+
+.toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 17px 0;
+    border-bottom: 1px solid #20334d;
+}
+
+.toggle-row:last-child {
+    border-bottom: none;
+}
+
+.toggle-text {
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.toggle-text small {
+    display: block;
+    color: #8293ac;
+    font-size: 12px;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #35d9f5;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.agent-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    background: #0b1526;
+    border: 1px solid #2a405c;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.agent-name {
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+.agent-status {
+    color: #f5c451;
+    font-size: 12px;
+}
+
+button {
+    background: #103443;
+    color: #35d9f5;
+    border: 1px solid #236078;
+    padding: 11px 16px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+button:hover {
+    background: #17475a;
+}
+
+.button-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+button.secondary {
+    color: #b6c4d7;
+    background: #172337;
+    border-color: #34445c;
+}
+
+.notice {
+    margin-top: 18px;
+    padding: 14px;
+    background: #14283b;
+    border: 1px solid #24445c;
+    color: #a9c2d7;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+#saveMessage {
+    color: #35d9a0;
+    font-size: 13px;
+    margin-top: 15px;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 195px;
+    }
+
+    .main {
+        margin-left: 195px;
+        padding: 22px;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        padding: 18px;
+    }
+
+    .subtitle {
+        margin-bottom: 15px;
+    }
+
+    .nav {
+        display: inline-block;
+        padding: 10px;
+        margin: 2px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 18px;
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+
+    .card {
+        padding: 17px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">⬡ SHIELD-Chain</div>
+    <div class="subtitle">CYBERSECURITY PLATFORM</div>
+
+    <a class="nav" href="dashboard.html">⌂ &nbsp; Dashboard</a>
+    <a class="nav" href="tdetection.html">⛨ &nbsp; Threat Detection</a>
+    <a class="nav" href="protected_files.html">▤ &nbsp; Protected Files</a>
+    <a class="nav" href="recovery.html">⟳ &nbsp; Recovery</a>
+    <a class="nav" href="blockchain_ledger.html">⬡ &nbsp; Blockchain Ledger</a>
+    <a class="nav active" href="settings.html">⚙ &nbsp; Settings</a>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div>
+            <h1>Settings</h1>
+            <p class="muted">
+                Configure monitoring preferences and security alerts.
+            </p>
+        </div>
+
+        <div class="status">● Demo Configuration</div>
+    </header>
+
+    <form id="settingsForm">
+
+        <section class="card">
+            <h2 class="section-title">File Monitoring</h2>
+            <p class="section-description">
+                Configure the folder you want the monitoring agent to watch.
+            </p>
+
+            <div class="field">
+                <label for="monitorFolder">Monitoring Folder Path</label>
+                <input
+                    type="text"
+                    id="monitorFolder"
+                    placeholder="Example: C:\Users\YourUser\Documents"
+                >
+                <p class="help">
+                    Enter the folder path that you plan to monitor.
+                    This demo page does not access the folder.
+                </p>
+            </div>
+
+            <div class="field">
+                <label for="scanInterval">Scan Interval (seconds)</label>
+                <input
+                    type="number"
+                    id="scanInterval"
+                    min="5"
+                    max="3600"
+                    value="30"
+                    required
+                >
+                <p class="help">
+                    Choose a value between 5 and 3600 seconds.
+                    This setting is stored only in this page's current session.
+                </p>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-text">
+                    Enable File Monitoring
+                    <small>Preference for monitoring file changes.</small>
+                </div>
+                <input type="checkbox" id="monitoringEnabled" checked>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-text">
+                    Check File Integrity
+                    <small>Preference for checking file hashes.</small>
+                </div>
+                <input type="checkbox" id="integrityEnabled" checked>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Alert Preferences</h2>
+            <p class="section-description">
+                Choose which types of events the interface should report.
+            </p>
+
+            <div class="toggle-row">
+                <div class="toggle-text">
+                    Suspicious File Changes
+                    <small>Notify when unexpected changes are detected.</small>
+                </div>
+                <input type="checkbox" id="fileAlerts" checked>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-text">
+                    Integrity Mismatch
+                    <small>Notify when a file hash differs from its baseline.</small>
+                </div>
+                <input type="checkbox" id="integrityAlerts" checked>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-text">
+                    Recovery Events
+                    <small>Show recovery-related notifications.</small>
+                </div>
+                <input type="checkbox" id="recoveryAlerts" checked>
+            </div>
+
+            <div class="field" style="margin-top:24px">
+                <label for="alertLevel">Alert Sensitivity</label>
+                <select id="alertLevel">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Security Configuration</h2>
+            <p class="section-description">
+                Configure preferences for integrity checks and event records.
+            </p>
+
+            <div class="toggle-row">
+                <div class="toggle-text">
+                    Record Security Events
+                    <small>Preference to record detected events in the ledger.</small>
+                </div>
+                <input type="checkbox" id="ledgerEnabled" checked>
+            </div>
+
+            <div class="toggle-row">
+                <div class="toggle-text">
+                    Require Review Before Recovery
+                    <small>Require human review before any file restoration.</small>
+                </div>
+                <input type="checkbox" id="reviewRequired" checked>
+            </div>
+
+            <div class="notice">
+                These controls currently store interface preferences only.
+                They do not enable actual monitoring, blockchain recording,
+                or file recovery. Those actions require a connected backend.
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="section-title">Monitoring Agent</h2>
+            <p class="section-description">
+                The Python agent will eventually communicate with the website
+                backend to provide actual monitoring status.
+            </p>
+
+            <div class="agent-box">
+                <div>
+                    <div class="agent-name">SHIELD-Chain Python Agent</div>
+                    <div class="agent-status" id="agentStatus">
+                        ● Not connected (demo)
+                    </div>
+                </div>
+
+                <button type="button" onclick="checkAgent()">
+                    Check Status
+                </button>
+            </div>
+        </section>
+
+        <div class="button-row">
+            <button type="button" class="secondary" onclick="resetSettings()">
+                Reset
+            </button>
+
+            <button type="submit">
+                Save Settings
+            </button>
+        </div>
+
+        <p id="saveMessage" aria-live="polite"></p>
+
+    </form>
+
+</main>
+
+<script>
+const form = document.getElementById("settingsForm");
+const saveMessage = document.getElementById("saveMessage");
+
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const interval = Number(
+        document.getElementById("scanInterval").value
+    );
+
+    if (!Number.isInteger(interval) || interval < 5 || interval > 3600) {
+        alert("Scan interval must be between 5 and 3600 seconds.");
+        return;
+    }
+
+    const settings = {
+        folder: document.getElementById("monitorFolder").value,
+        scanInterval: interval,
+        monitoringEnabled:
+            document.getElementById("monitoringEnabled").checked,
+        integrityEnabled:
+            document.getElementById("integrityEnabled").checked,
+        fileAlerts: document.getElementById("fileAlerts").checked,
+        integrityAlerts:
+            document.getElementById("integrityAlerts").checked,
+        recoveryAlerts:
+            document.getElementById("recoveryAlerts").checked,
+        alertLevel: document.getElementById("alertLevel").value,
+        ledgerEnabled:
+            document.getElementById("ledgerEnabled").checked,
+        reviewRequired:
+            document.getElementById("reviewRequired").checked
+    };
+
+    // Demo only: no backend connection or permanent storage.
+    console.log("Demo settings:", settings);
+
+    saveMessage.textContent =
+        "Settings validated for this demo. They have not been sent " +
+        "to a backend or saved permanently.";
+});
+
+function resetSettings() {
+    form.reset();
+    saveMessage.textContent = "Demo settings reset to their defaults.";
+}
+
+function checkAgent() {
+    const status = document.getElementById("agentStatus");
+
+    status.textContent =
+        "● Not connected — backend integration required";
+    status.style.color = "#f5c451";
+}
+</script>
+
+</body>
+</html>
